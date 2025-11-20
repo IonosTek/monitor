@@ -3,238 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IonosTek Monitor</title>
+    <title>IonosTek Monitor V86.0 (Final)</title>
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* --- CSS Base: V64.1 (Confirmed Stable) --- */
-        :root {
-            --bg: #0b0b0b; --card: #161616; --text: #f0f0f0; --sub: #888;
-            --green: #00e676; --yellow: #ffea00; --orange: #ff9100;
-            --red: #ff1744; --blue: #2979ff; --purple: #d500f9;
+        /* --- CSS V86.0 (Final Production) --- */
+        :root { 
+            --bg: #0b0b0b; --card: #161616; --text: #f0f0f0; 
+            --green: #00e676; --yellow: #ffea00; --orange: #ff9100; 
+            --red: #ff1744; --blue: #2979ff; 
         }
         body { font-family: 'Chakra Petch', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 15px; user-select: none; }
-        .header { text-align: center; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 15px; }
-        .header h1 { margin: 0; font-weight: 700; font-size: 1.8em; letter-spacing: 1px; }
-        /* Version removed from H1 */
         
-        #status { font-family: 'Chakra Petch', sans-serif; font-weight: 500; font-size: 0.95em; color: #aaa; margin-top: 8px; letter-spacing: 0.5px; }
-        .blink { animation: blinker 1s infinite; color: var(--green); }
-        @keyframes blinker { 50% { opacity: 0; } }
-        .btn-guide { background: transparent; border: 1px solid var(--blue); color: var(--blue); padding: 5px 20px; margin-top: 10px; border-radius: 20px; cursor: pointer; font-family: inherit; font-weight: bold; transition:0.3s; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 15px; flex-wrap: wrap; }
+        h1 { margin: 0; font-weight: 700; font-size: 1.8em; letter-spacing: 1px; }
+        
+        /* Clock */
+        .clock-box { text-align: right; }
+        .utc-time { font-size: 1.6em; font-weight: 700; color: var(--blue); line-height: 1; }
+        .local-time { font-size: 0.85em; color: #888; margin-top: 4px; font-weight: 500; }
+        .blink-colon { animation: blinker 1s infinite; }
+        @keyframes blinker { 50% { opacity: 0.3; } }
+        
+        .sys-active { color:#aaa; font-size:0.9em; margin-top:5px; }
+        .dot-blink { animation: fade 2s infinite; color: var(--green); }
+        @keyframes fade { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        .btn-guide { background: transparent; border: 1px solid var(--blue); color: var(--blue); padding: 4px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.75em; margin-top: 5px; transition: 0.3s; }
         .btn-guide:hover { background: var(--blue); color: #fff; }
 
         /* Stats Grid */
-        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-bottom: 30px; max-width: 1400px; margin-left: auto; margin-right: auto; }
-        .box { background: var(--card); padding: 15px 5px; border-radius: 6px; text-align: center; border-top: 3px solid #444; box-shadow: 0 4px 6px rgba(0,0,0,0.3); transition: transform 0.2s; }
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-bottom: 20px; max-width: 1400px; margin: 0 auto 20px; }
+        .box { background: var(--card); padding: 15px 5px; border-radius: 6px; text-align: center; border-top: 3px solid #444; transition: transform 0.2s; }
         .box:hover { transform: translateY(-3px); }
-        .val { font-size: 2.0em; font-weight: 700; margin: 5px 0; display: flex; align-items: center; justify-content: center; gap: 5px; }
-        .lbl { font-size: 0.8em; font-weight: 600; color: var(--sub); text-transform: uppercase; letter-spacing: 0.5px; }
-        .unit { font-size: 0.7em; font-weight: 500; color: #666; display: block; margin-top: -5px; }
+        .val { font-size: 2.0em; font-weight: 700; margin: 5px 0; display: flex; justify-content: center; align-items: center; gap: 5px; }
+        .lbl { font-size: 0.8em; font-weight: 600; color: #888; text-transform: uppercase; }
+        .unit { font-size: 0.7em; color: #666; display: block; margin-top: -5px; }
         
-        @keyframes arrow { 0% { transform: translateY(0); } 50% { transform: translateY(-2px); } 100% { transform: translateY(0); } }
-        .trend { font-size: 0.6em; animation: arrow 2s infinite; display: inline-block; }
-        .bz-state-arrow { font-size: 1.2em; margin-right: 5px; font-weight: 900; }
+        /* Arrows */
+        .trend { font-size: 0.5em; font-weight: 900; display: inline-block; margin-left: 5px; animation: arrow-bounce 2s infinite; }
+        @keyframes arrow-bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+        .bz-state-arrow { font-size: 1.0em; margin-right: 8px; font-weight: 900; }
 
-        /* Grid */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 20px; max-width: 1600px; margin: 0 auto; }
-        .card { overflow: hidden; background: var(--card); border-radius: 8px; border: 1px solid #333; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
-        .c-head { background: #202020; padding: 10px 15px; display: flex; justify-content: space-between; font-size: 0.9em; color: #ccc; border-bottom: 1px solid #333; }
+        .c-norm { border-top-color: var(--green) !important; color: var(--green); }
+        .c-warn { border-top-color: var(--yellow) !important; color: var(--yellow); }
+        .c-alert { border-top-color: var(--red) !important; color: var(--red); }
         
-        .c-body { 
-            background: #000; height: 300px; overflow: hidden; 
-            display: flex; align-items: center; justify-content: center; padding: 0; 
-        }
+        .hf-banner { background: #1a1a1a; padding: 12px; text-align: center; border: 1px solid #333; margin-bottom: 20px; border-radius: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 20px; max-width: 1600px; margin: 0 auto; }
+        .card { background: var(--card); border-radius: 8px; border: 1px solid #333; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .c-head { background: #202020; padding: 10px 15px; font-size: 0.9em; color: #ccc; border-bottom: 1px solid #333; display: flex; justify-content: space-between; }
+        .c-body { background: #000; height: 300px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .c-body img { width: 100%; height: 100%; object-fit: contain; cursor: pointer; transition: opacity 0.3s; }
 
         /* Modal */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 99999; overflow-y: auto; align-items: center; justify-content: center; }
-        .m-content { background: var(--card); width: 90%; max-width: 700px; margin: 50px auto; padding: 30px; border: 1px solid #444; border-radius: 10px; position: relative; }
-        .close { position: absolute; top: 15px; right: 20px; font-size: 30px; cursor: pointer; color: #fff; z-index: 100; }
-        
-        #lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 10000; align-items: center; justify-content: center; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 999; align-items: center; justify-content: center; }
+        .m-content { background: var(--card); padding: 30px; border-radius: 10px; max-width: 700px; border: 1px solid #444; position: relative; }
+        .close { position: absolute; top: 10px; right: 20px; font-size: 30px; cursor: pointer; color: #fff; }
+        #lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 1000; align-items: center; justify-content: center; }
         #lightbox img { max-width: 98%; max-height: 95vh; border: 2px solid #333; }
-
-        /* Colors */
-        .c-norm { border-top-color: var(--green) !important; color: var(--green); }
-        .c-warn { border-top-color: var(--yellow) !important; color: var(--yellow); }
-        .c-mod { border-top-color: var(--orange) !important; color: var(--orange); }
-        .c-alert { border-top-color: var(--red) !important; color: var(--red); }
         
-        .footer { text-align: center; margin-top: 40px; font-size: 0.75em; color: #444; }
+        .footer { display: flex; justify-content: space-between; margin-top: 40px; font-size: 0.75em; color: #444; padding: 0 10px; border-top: 1px solid #222; padding-top: 20px; }
+        #fetch-log { color: var(--orange); font-family: monospace; }
+        .btn-retry { background: #333; border: 1px solid #555; color: #ccc; padding: 2px 10px; cursor: pointer; border-radius: 4px; font-size: 0.9em; margin-left: 10px; }
 
-        /* Guide Styling */
-        .guide-sec { margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; }
-        .guide-h { color: var(--blue); font-weight: bold; margin-bottom: 10px; font-size: 1.1em; }
-        .guide-p { color: #ccc; font-size: 0.9em; line-height: 1.6; }
-        .hl-g { color: var(--green); } .hl-r { color: var(--red); } .hl-y { color: var(--yellow); }
+        /* Guide CSS */
+        .guide-sec { margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #333; }
+        .guide-h { color: var(--blue); font-weight: 700; margin-bottom: 10px; font-size: 1.1em; }
+        .guide-p { color: #ccc; font-size: 0.95em; line-height: 1.6; margin-bottom: 8px; }
+        .hl-g { color: var(--green); font-weight:bold; }
+        .hl-r { color: var(--red); font-weight:bold; }
+        .hl-y { color: var(--yellow); font-weight:bold; }
 
-        @media (max-width: 600px) { .stats { grid-template-columns: repeat(2, 1fr); gap: 10px; } .box { padding: 10px 2px; } .val { font-size: 1.5em; } }
+        @media (max-width: 600px) { 
+            .header { flex-direction: column; text-align: center; gap:10px; } 
+            .stats { grid-template-columns: repeat(2, 1fr); gap: 10px; } 
+            .clock-box { text-align: center; }
+        }
     </style>
 </head>
 <body>
-
     <div class="header">
-        <h1>IONOSTEK <span style="color:#fff">MONITOR</span></h1>
-        <div id="status"><span class="blink">●</span> System Active</div>
-        <button onclick="openGuideModal()" class="btn-guide">📘 OPERATOR GUIDE</button>
+        <div>
+            <h1>IONOSTEK <span style="color:#fff">MONITOR</span></h1>
+            <div class="sys-active"><span class="dot-blink">●</span> System Active</div>
+        </div>
+        <div class="clock-box">
+            <div class="utc-time"><span id="u-h">00</span><span class="blink-colon">:</span><span id="u-m">00</span> UTC</div>
+            <div class="local-time" id="local-clock">--:-- Local</div>
+            <button onclick="document.getElementById('guideModal').style.display='flex'" class="btn-guide">📘 OPERATOR GUIDE</button>
+        </div>
     </div>
 
     <div class="stats">
-        <div class="box" id="b-sfi"><div class="lbl">SFI</div><div class="val" id="v-sfi">--</div><span class="unit">F10.7cm</span></div>
-        <div class="box" id="b-ssn"><div class="lbl">SSN</div><div class="val" id="v-ssn">--</div><span class="unit">Count</span></div>
-        
-        <div class="box" id="b-kp"><div class="lbl">Kp</div><div class="val" id="v-kp">--</div><span class="unit">Index</span></div>
-        <div class="box" id="b-dst"><div class="lbl">Dst</div><div class="val" id="v-dst">--</div><span class="unit">nT</span></div>
-        <div class="box" id="b-bz"><div class="lbl">Bz</div>
-            <div class="val" id="v-bz-container">
-                <span id="bz-state" class="bz-state-arrow"></span>
-                <span id="v-bz">--</span>
-            </div>
-            <span class="unit">nT</span>
-        </div>
-        <div class="box" id="b-bt"><div class="lbl">Bt</div><div class="val" id="v-bt">--</div><span class="unit">nT</span></div>
-        
-        <div class="box" id="b-wind"><div class="lbl">Wind</div><div class="val" id="v-wind">--</div><span class="unit">km/s</span></div>
-        <div class="box" id="b-den"><div class="lbl">Den</div><div class="val" id="v-den">--</div><span class="unit">p/cm³</span></div>
-    </div>
-
-    <div class="grid">
-        <div class="card"><div class="c-head"><span>PROPAGATION</span></div><div class="c-body"><img src="https://services.swpc.noaa.gov/images/animations/ctipe/tec/latest.png" onclick="view(this.src)"></div></div>
-        <div class="card"><div class="c-head"><span>SOLAR FLARES</span></div><div class="c-body"><img src="https://services.swpc.noaa.gov/images/animations/x-rays/solar-flare-line-plot-3-day.png" onclick="view(this.src)" onerror="this.src='https://services.swpc.noaa.gov/images/swx-overview-small.gif'"></div></div>
-        <div class="card"><div class="c-head"><span>AURORA</span></div><div class="c-body"><img src="https://services.swpc.noaa.gov/images/aurora-forecast-northern-hemisphere.jpg" onclick="view(this.src)"></div></div>
-        <div class="card"><div class="c-head"><span>BLACKOUT</span></div><div class="c-body"><img src="https://services.swpc.noaa.gov/images/animations/d-rap/global/d-rap/latest.png" onclick="view(this.src)"></div></div>
-    </div>
-
-    <div id="guideModal" class="modal">
-        <div class="m-content">
-            <span class="close" onclick="closeModal('guideModal')">&times;</span>
-            <h2 style="color:var(--green); border-bottom:1px solid #444; padding-bottom:10px;">OPERATOR GUIDE</h2>
-            <div class="guide-sec">
-                <div class="guide-h">★ Understanding Bz (The Switch)</div>
-                <div class="guide-p">
-                    <p><span class="hl-g">Bz Positive (+): "SWITCH CLOSED"</span><br>Shields UP. HF Quiet.</p>
-                    <p><span class="hl-r">Bz Negative (-): "SWITCH OPEN"</span><br>Shields DOWN. Storm Alert!</p>
-                </div>
-            </div>
-            <div class="guide-sec">
-                <div class="guide-h">★ Reading Values</div>
-                <div class="guide-p">
-                    <b class="hl-g">Dst > -20 nT:</b> Quiet | <b class="hl-y">-20 to -50 nT:</b> Minor | <b class="hl-r">< -50 nT:</b> Storm<br>
-                    <b>Kp:</b> 0-3 Quiet, 5+ Storm | <b>Wind:</b> >500 Unstable
-                </div>
-            </div>
-        </div>
-    </div>
-    <div id="lightbox" onclick="closeModal('lightbox')"><img id="lb-img"></div>
-    <div class="footer">IonosTek Monitor • Stable Core</div>
-
-    <script>
-        document.addEventListener('contextmenu', e => e.preventDefault());
-        document.onkeydown = function(e) { if(e.keyCode == 123 || (e.ctrlKey && e.keyCode == 85)) return false; }
-
-        function openGuideModal() { document.getElementById('guideModal').style.display = 'flex'; }
-        function closeModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
-        function view(src) { document.getElementById('lb-img').src = src + '?t=' + Date.now(); document.getElementById('lightbox').style.display = 'flex'; }
-        function tick() { document.getElementById('status').innerHTML = '<span class="blink">●</span> ' + new Date().toUTCString().replace('GMT', 'UTC'); }
-        
-        function set(id, val, diff=0) {
-            const el = document.getElementById('v-'+id);
-            const box = document.getElementById('b-'+id);
-            if(!el) return;
-            
-            el.innerText = val; 
-            
-            let s = 'c-norm';
-            if(id=='dst') { if(val < -100) s = 'c-alert'; else if(val < -50) s = 'c-mod'; else if(val < -20) s = 'c-warn'; else s = 'c-norm'; }
-            else if(id=='kp') { if(val >= 7) s = 'c-alert'; else if(val == 6) s = 'c-mod'; else if(val >= 4) s = 'c-warn'; else s = 'c-norm'; }
-            else if(id=='bz') {
-                if(val < -5) s = 'c-alert'; else if(val < 0) s = 'c-warn'; else s = 'c-norm';
-                const stateEl = document.getElementById('bz-state');
-                if (stateEl) { if (val >= 0) { stateEl.innerHTML = '&#8593;'; stateEl.style.color = 'var(--green)'; } else { stateEl.innerHTML = '&#8595;'; stateEl.style.color = 'var(--red)'; } }
-            }
-            else if(id=='sfi') s = val>150?'c-good':(val>100?'c-norm':'c-warn');
-            else if(id=='wind') s = val>700?'c-alert':(val>500?'c-warn':'c-norm');
-
-            box.className = 'box '+s;
-
-            if(diff !== 0 && !isNaN(diff)) {
-                let c = diff>0 ? 'var(--red)' : 'var(--green)';
-                if(['sfi','ssn','dst','bz'].includes(id)) c = diff > 0 ? 'var(--green)' : 'var(--red)';
-                else c = diff > 0 ? 'var(--red)' : 'var(--green)'; 
-                el.innerHTML += ` <span class="trend" style="color:${c}">${diff>0?'▲':'▼'}</span>`;
-            }
-        }
-
-        // --- Stable Fetcher (V64.1 Logic) ---
-        async function getData(url) {
-            try { const r = await fetch(url + '?t=' + Date.now()); if(r.ok) return await r.json(); } catch(e){}
-            try { const r = await fetch('https://corsproxy.io/?' + encodeURIComponent(url + '?t=' + Date.now())); return await r.json(); } catch(e){ return null; }
-        }
-        
-        async function getText(url) {
-            try { const r = await fetch('https://corsproxy.io/?' + encodeURIComponent(url + '?t=' + Date.now())); return await r.text(); } catch(e){ return null; }
-        }
-
-        async function updateAll() {
-            // Mag
-            const mag = await getData('https://services.swpc.noaa.gov/products/solar-wind/mag-5-minute.json');
-            if(mag && mag.length > 2) {
-                const l = mag[mag.length-1], p = mag[mag.length-2];
-                set('bz', parseFloat(l[1]), parseFloat(l[1])-parseFloat(p[1]));
-                set('bt', Math.round(l[2]), parseFloat(l[2])-parseFloat(p[2]));
-            }
-
-            // Plasma
-            const plas = await getData('https://services.swpc.noaa.gov/products/solar-wind/plasma-5-minute.json');
-            if(plas && plas.length > 2) {
-                const l = plas[plas.length-1], p = plas[plas.length-2];
-                set('wind', Math.round(l[2]), parseFloat(l[2])-parseFloat(p[2]));
-                set('den', Math.round(l[1]), parseFloat(l[1])-parseFloat(p[1]));
-            }
-
-            // Kp
-            const kp = await getData('https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json');
-            if(kp && kp.length > 2) {
-                const l = kp[kp.length-1], p = kp[kp.length-2];
-                set('kp', l[1], parseFloat(l[1])-parseFloat(p[1]));
-            }
-
-            // Dst
-            const dst = await getData('https://services.swpc.noaa.gov/products/kyoto-dst.json');
-            if(dst && dst.length > 2) {
-                const l = dst[dst.length-1], p = dst[dst.length-2];
-                const val = parseInt(l[1]);
-                let color = (val < -50) ? 'c-alert' : (val < -20 ? 'c-warn' : 'c-norm');
-                set('dst', val, color, val-parseInt(p[1]));
-            }
-
-            // SFI/SSN
-            const txtSfi = await getText('https://services.swpc.noaa.gov/text/daily-solar-indices.txt');
-            if(txtSfi) {
-                const lines = txtSfi.trim().split('\n');
-                let curr=null, prev=null;
-                for(let i=lines.length-1; i>=0; i--) {
-                    if(lines[i].trim().startsWith('20')) {
-                        let cols = lines[i].trim().split(/\s+/);
-                        if(cols.length > 4) {
-                            if(!curr) curr = cols;
-                            else { prev = cols; break; }
-                        }
-                    }
-                }
-                if(curr) {
-                    let sfiVal = parseInt(curr[3]), prevSfi = prev ? parseInt(prev[3]) : sfiVal;
-                    set('sfi', sfiVal, sfiVal-prevSfi);
-                    let ssnVal = parseInt(curr[4]), prevSsn = prev ? parseInt(prev[4]) : ssnVal;
-                    set('ssn', ssnVal, ssnVal-prevSsn);
-                }
-            }
-        }
-
-        tick(); updateAll();
-        setInterval(tick, 1000);
-        setInterval(updateAll, 60000);
-        setInterval(() => { document.querySelectorAll('.c-body img').forEach(i => i.src=i.src.split('?')[0]+'?t='+Date.now())}, 300000);
-    </script>
-</body>
-</html>
+        <div class
