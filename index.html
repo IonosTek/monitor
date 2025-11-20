@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IonosTek Monitor V87.0 (GitHub Fix)</title>
+    <title>IonosTek Monitor V87.2 (Big Arrow Fix)</title>
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* --- CSS V87.0 --- */
+        /* --- CSS V87.2 --- */
         :root { 
             --bg: #0b0b0b; --card: #161616; --text: #f0f0f0; 
             --green: #00e676; --yellow: #ffea00; --orange: #ff9100; 
@@ -39,10 +39,29 @@
         .lbl { font-size: 0.8em; font-weight: 600; color: #888; text-transform: uppercase; }
         .unit { font-size: 0.7em; color: #666; display: block; margin-top: -5px; }
         
-        /* Arrows */
-        .trend { font-size: 0.5em; font-weight: 900; display: inline-block; margin-left: 5px; animation: arrow-bounce 2s infinite; }
+        /* --- ARROW ADJUSTMENTS (V87.2) --- */
+        
+        /* 1. Big Left Arrow (Status) - Moved UP to center */
+        .bz-arrow-main { 
+            font-size: 1.2em; 
+            font-weight: 900; 
+            margin-right: 8px;
+            display: inline-block;
+            position: relative;
+            top: -0.1em; /* ดันขึ้นไปนิดนึงให้อยู่กลางตัวเลข */
+        }
+
+        /* 2. Small Right Arrow (Trend) - Kept centered */
+        .trend { 
+            font-size: 0.6em; 
+            font-weight: 900; 
+            display: inline-block; 
+            margin-left: 5px; 
+            animation: arrow-bounce 2s infinite;
+            position: relative;
+            top: -0.2em;
+        }
         @keyframes arrow-bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
-        .bz-state-arrow { font-size: 1.0em; margin-right: 8px; font-weight: 900; }
 
         .c-norm { border-top-color: var(--green) !important; color: var(--green); }
         .c-warn { border-top-color: var(--yellow) !important; color: var(--yellow); }
@@ -164,11 +183,10 @@
             <span id="fetch-log">System Ready</span>
             <button class="btn-retry" onclick="updateAll()">REFRESH</button>
         </div>
-        <span style="color:#666;">V87.0 • GitHub Fix</span>
+        <span style="color:#666;">V87.2 • Big Arrow Fix</span>
     </div>
 
     <script>
-        // --- 2. UI HELPERS ---
         function view(src) { document.getElementById('lb-img').src=src; document.getElementById('lightbox').style.display='flex'; }
         function log(msg) { try{document.getElementById('fetch-log').innerText=msg;}catch(e){} }
 
@@ -192,7 +210,9 @@
                          let tSym = diff > 0 ? '▲' : '▼';
                          trendHtml = `<span class="trend" style="color:${tColor}">${tSym}</span>`;
                     }
-                    el.innerHTML = `<span style="font-size:1.2em; font-weight:900; color:${color}; margin-right:8px;">${mainArrow}</span> ${val} ${trendHtml}`;
+                    // Apply CSS Class for Big Left Arrow
+                    el.innerHTML = `<span class="bz-arrow-main" style="color:${color}">${mainArrow}</span> ${val} ${trendHtml}`;
+                    
                     let s = bzVal < -5 ? 'c-alert' : (bzVal < 0 ? 'c-warn' : 'c-norm');
                     if(box) box.className = 'box '+s;
                     return; 
@@ -219,7 +239,7 @@
             } catch(e){}
         }
 
-        // --- 3. DATA FETCHING ---
+        // --- DATA FETCHING ---
         async function fetchSmart(url, type='json') {
             try {
                 let r = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(url + '?t=' + Date.now()));
@@ -310,14 +330,13 @@
             log('Active');
         }
 
-        // --- MAIN START (Classic Style) ---
-        // This runs ONLY after HTML is fully parsed
-        window.onload = function() {
+        // --- MAIN START ---
+        document.addEventListener('DOMContentLoaded', () => {
             setInterval(updateClock, 1000);
             updateClock();
             updateAll();
             setInterval(updateAll, 60000);
-        };
+        });
     </script>
 </body>
 </html>
