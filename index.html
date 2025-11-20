@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IonosTek Monitor V86.0 (Final)</title>
+    <title>IonosTek Monitor V87.0 (GitHub Fix)</title>
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* --- CSS V86.0 (Final Production) --- */
+        /* --- CSS V87.0 --- */
         :root { 
             --bg: #0b0b0b; --card: #161616; --text: #f0f0f0; 
             --green: #00e676; --yellow: #ffea00; --orange: #ff9100; 
@@ -58,7 +58,7 @@
 
         /* Modal */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 999; align-items: center; justify-content: center; }
-        .m-content { background: var(--card); padding: 30px; border-radius: 10px; max-width: 700px; border: 1px solid #444; position: relative; }
+        .m-content { background: var(--card); padding: 30px; border-radius: 10px; max-width: 600px; border: 1px solid #444; position: relative; }
         .close { position: absolute; top: 10px; right: 20px; font-size: 30px; cursor: pointer; color: #fff; }
         #lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 1000; align-items: center; justify-content: center; }
         #lightbox img { max-width: 98%; max-height: 95vh; border: 2px solid #333; }
@@ -81,6 +81,20 @@
             .clock-box { text-align: center; }
         }
     </style>
+    <script>
+        function updateClock() {
+            try {
+                const d = new Date();
+                if(document.getElementById('u-h')) {
+                    document.getElementById('u-h').innerText = d.getUTCHours().toString().padStart(2,'0');
+                    document.getElementById('u-m').innerText = d.getUTCMinutes().toString().padStart(2,'0');
+                    const lH = d.getHours().toString().padStart(2,'0');
+                    const lM = d.getMinutes().toString().padStart(2,'0');
+                    document.getElementById('local-clock').innerText = `${lH}:${lM} Local`;
+                }
+            } catch(e){}
+        }
+    </script>
 </head>
 <body>
     <div class="header">
@@ -96,4 +110,214 @@
     </div>
 
     <div class="stats">
-        <div class
+        <div class="box" id="b-sfi"><div class="lbl">SFI</div><div class="val" id="v-sfi">--</div><span class="unit">F10.7cm</span></div>
+        <div class="box" id="b-ssn"><div class="lbl">SSN</div><div class="val" id="v-ssn">--</div><span class="unit">Count</span></div>
+        <div class="box" id="b-kp"><div class="lbl">Kp</div><div class="val" id="v-kp">--</div><span class="unit">Index</span></div>
+        <div class="box" id="b-dst"><div class="lbl">Dst</div><div class="val" id="v-dst">--</div><span class="unit">nT</span></div>
+        
+        <div class="box" id="b-bz">
+            <div class="lbl">Bz</div>
+            <div class="val" id="v-bz">--</div>
+            <span class="unit">nT</span>
+        </div>
+        
+        <div class="box" id="b-bt"><div class="lbl">Bt</div><div class="val" id="v-bt">--</div><span class="unit">nT</span></div>
+        <div class="box" id="b-wind"><div class="lbl">Wind</div><div class="val" id="v-wind">--</div><span class="unit">km/s</span></div>
+        <div class="box" id="b-den"><div class="lbl">Den</div><div class="val" id="v-den">--</div><span class="unit">p/cm³</span></div>
+    </div>
+
+    <div class="hf-banner">
+        <span style="color:#888; margin-right:10px; font-size:0.9em;">HF ESTIMATE:</span>
+        <span id="hf-cond" style="font-weight:bold;">INITIALIZING...</span>
+    </div>
+
+    <div class="grid">
+        <div class="card"><div class="c-head"><span>PROPAGATION (TEC)</span></div><div class="c-body"><img src="https://services.swpc.noaa.gov/images/animations/ctipe/tec/latest.png" referrerpolicy="no-referrer" onclick="view(this.src)"></div></div>
+        <div class="card"><div class="c-head"><span>SUNSPOTS (SDO/HMI)</span></div><div class="c-body"><img src="https://sdo.gsfc.nasa.gov/assets/img/latest/latest_1024_HMIIC.jpg" referrerpolicy="no-referrer" onclick="view(this.src)"></div></div>
+        <div class="card"><div class="c-head"><span>SOLAR FLARES (X-RAY)</span></div><div class="c-body"><img src="https://services.swpc.noaa.gov/images/animations/x-rays/solar-flare-line-plot-3-day.png" referrerpolicy="no-referrer" onclick="view(this.src)" onerror="this.src='https://services.swpc.noaa.gov/images/swx-overview-small.gif'"></div></div>
+        <div class="card"><div class="c-head"><span>AURORA FORECAST</span></div><div class="c-body"><img src="https://services.swpc.noaa.gov/images/aurora-forecast-northern-hemisphere.jpg" referrerpolicy="no-referrer" onclick="view(this.src)"></div></div>
+        <div class="card"><div class="c-head"><span>RADIO BLACKOUT (D-RAP)</span></div><div class="c-body"><img src="https://services.swpc.noaa.gov/images/animations/d-rap/global/d-rap/latest.png" referrerpolicy="no-referrer" onclick="view(this.src)"></div></div>
+    </div>
+
+    <div id="guideModal" class="modal">
+        <div class="m-content">
+            <span class="close" onclick="document.getElementById('guideModal').style.display='none'">&times;</span>
+            <h2 style="color:var(--green); border-bottom:1px solid #444; padding-bottom:10px; margin-top:0;">OPERATOR GUIDE</h2>
+            <div class="guide-sec">
+                <div class="guide-h">★ Understanding Bz (The Switch)</div>
+                <div class="guide-p"><span class="hl-g">Bz Positive (+): "SWITCH CLOSED"</span><br>Shields UP. HF Quiet.</div>
+                <div class="guide-p"><span class="hl-r">Bz Negative (-): "SWITCH OPEN"</span><br>Shields DOWN. Storm Alert!</div>
+            </div>
+            <div>
+                <div class="guide-h">★ Reading Values</div>
+                <div class="guide-p">
+                    <span class="hl-g">Dst > -20 nT:</span> Quiet | <span class="hl-y">-20 to -50 nT:</span> Minor | <span class="hl-r">< -50 nT:</span> Storm<br>
+                    <b>Kp:</b> 0-3 Quiet, 5+ Storm | <b>Wind:</b> >500 Unstable
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="lightbox" onclick="this.style.display='none'"><img id="lb-img"></div>
+
+    <div class="footer">
+        <div>
+            <span id="fetch-log">System Ready</span>
+            <button class="btn-retry" onclick="updateAll()">REFRESH</button>
+        </div>
+        <span style="color:#666;">V87.0 • GitHub Fix</span>
+    </div>
+
+    <script>
+        // --- 2. UI HELPERS ---
+        function view(src) { document.getElementById('lb-img').src=src; document.getElementById('lightbox').style.display='flex'; }
+        function log(msg) { try{document.getElementById('fetch-log').innerText=msg;}catch(e){} }
+
+        function set(id, val, diff=0) {
+            try {
+                let el = document.getElementById('v-'+id);
+                let box = document.getElementById('b-'+id);
+                if(!el) return;
+                if(val === undefined || val === null || isNaN(parseFloat(val))) return;
+                
+                // Bz Logic
+                if (id === 'bz') {
+                    let bzVal = parseFloat(val);
+                    let isClosed = bzVal >= 0;
+                    let mainArrow = isClosed ? '&#8593;' : '&#8595;';
+                    let color = isClosed ? 'var(--green)' : 'var(--red)';
+                    
+                    let trendHtml = '';
+                    if(diff !== 0 && !isNaN(diff)) {
+                         let tColor = diff < 0 ? 'var(--red)' : 'var(--green)';
+                         let tSym = diff > 0 ? '▲' : '▼';
+                         trendHtml = `<span class="trend" style="color:${tColor}">${tSym}</span>`;
+                    }
+                    el.innerHTML = `<span style="font-size:1.2em; font-weight:900; color:${color}; margin-right:8px;">${mainArrow}</span> ${val} ${trendHtml}`;
+                    let s = bzVal < -5 ? 'c-alert' : (bzVal < 0 ? 'c-warn' : 'c-norm');
+                    if(box) box.className = 'box '+s;
+                    return; 
+                }
+
+                // Standard Logic
+                let arrowHtml = '';
+                if(diff !== 0 && !isNaN(diff)) {
+                    let isBad = false;
+                    if(['kp','wind','den'].includes(id)) isBad = (diff > 0);
+                    else isBad = (diff < 0);
+                    let color = isBad ? 'var(--red)' : 'var(--green)';
+                    let symbol = diff > 0 ? '▲' : '▼';
+                    arrowHtml = `<span class="trend" style="color:${color}">${symbol}</span>`;
+                }
+                el.innerHTML = val + arrowHtml;
+                
+                let s = 'c-norm';
+                if(id=='kp' && val >= 5) s = 'c-alert';
+                if(id=='dst' && val < -50) s = 'c-alert';
+                if(id=='wind' && val > 500) s = 'c-warn';
+                if(box) box.className = 'box '+s;
+
+            } catch(e){}
+        }
+
+        // --- 3. DATA FETCHING ---
+        async function fetchSmart(url, type='json') {
+            try {
+                let r = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(url + '?t=' + Date.now()));
+                if(r.ok) {
+                    let data = await r.json();
+                    if(data.contents) {
+                        if(type === 'json') return JSON.parse(data.contents);
+                        return data.contents;
+                    }
+                }
+            } catch(e) { console.log('Proxy 1 Fail'); }
+
+            try {
+                let r = await fetch('https://corsproxy.io/?' + encodeURIComponent(url + '?t=' + Date.now()));
+                if(r.ok) {
+                    if(type === 'json') return await r.json();
+                    return await r.text();
+                }
+            } catch(e) {}
+            return null;
+        }
+
+        async function updateAll() {
+            log('Syncing...');
+            
+            // SFI
+            let sfiTxt = await fetchSmart('https://services.swpc.noaa.gov/text/daily-solar-indices.txt', 'text');
+            if(sfiTxt) {
+                let lines = sfiTxt.trim().split('\n');
+                let curr = null, prev = null;
+                for(let i=lines.length-1; i>=0; i--) {
+                    if(lines[i].trim().startsWith('20')) {
+                        let cols = lines[i].trim().split(/\s+/);
+                        if(cols.length > 4) {
+                            if(!curr) curr = cols; else { prev = cols; break; }
+                        }
+                    }
+                }
+                if(curr) {
+                    let vSfi = parseInt(curr[3]), pSfi = prev ? parseInt(prev[3]) : vSfi;
+                    let vSsn = parseInt(curr[4]), pSsn = prev ? parseInt(prev[4]) : vSsn;
+                    set('sfi', vSfi, vSfi - pSfi);
+                    set('ssn', vSsn, vSsn - pSsn);
+                }
+            }
+
+            // Solar Wind
+            let mag = await fetchSmart('https://services.swpc.noaa.gov/products/solar-wind/mag-2-hour.json', 'json');
+            if(!mag) mag = await fetchSmart('https://services.swpc.noaa.gov/products/solar-wind/mag-6-hour.json', 'json');
+            if(mag && mag.length > 2) {
+                let l = mag[mag.length-1], p = mag[mag.length-2];
+                set('bz', l[3], parseFloat(l[3]) - parseFloat(p[3])); 
+                set('bt', Math.round(l[6]), parseFloat(l[6]) - parseFloat(p[6]));
+            }
+
+            // Plasma
+            let plas = await fetchSmart('https://services.swpc.noaa.gov/products/solar-wind/plasma-2-hour.json', 'json');
+            if(!plas) plas = await fetchSmart('https://services.swpc.noaa.gov/products/solar-wind/plasma-6-hour.json', 'json');
+            if(plas && plas.length > 2) {
+                let l = plas[plas.length-1], p = plas[plas.length-2];
+                set('den', Math.round(l[1]), parseFloat(l[1]) - parseFloat(p[1]));
+                set('wind', Math.round(l[2]), parseFloat(l[2]) - parseFloat(p[2]));
+            }
+
+            // Kp & Dst
+            let kp = await fetchSmart('https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json', 'json');
+            if(kp && kp.length > 2) {
+                let l = kp[kp.length-1], p = kp[kp.length-2];
+                set('kp', l[1], parseFloat(l[1]) - parseFloat(p[1]));
+            }
+            
+            let dst = await fetchSmart('https://services.swpc.noaa.gov/products/kyoto-dst.json', 'json');
+            if(dst && dst.length > 2) {
+                let l = dst[dst.length-1], p = dst[dst.length-2];
+                set('dst', parseInt(l[1]), parseInt(l[1]) - parseInt(p[1]));
+            }
+
+            // Forecast
+            let kpv = parseFloat(document.getElementById('v-kp').innerText)||0;
+            let sfiv = parseInt(document.getElementById('v-sfi').innerText)||0;
+            let cond = document.getElementById('hf-cond');
+            let txt = "NORMAL", c = "#ccc";
+            if(kpv >= 5) { txt = "STORM WARNING"; c = "var(--red)"; }
+            else if(sfiv > 120) { txt = "EXCELLENT"; c = "var(--green)"; }
+            else if(sfiv > 90) { txt = "GOOD"; c = "var(--green)"; }
+            cond.innerText = txt; cond.style.color = c;
+            
+            log('Active');
+        }
+
+        // --- MAIN START (Classic Style) ---
+        // This runs ONLY after HTML is fully parsed
+        window.onload = function() {
+            setInterval(updateClock, 1000);
+            updateClock();
+            updateAll();
+            setInterval(updateAll, 60000);
+        };
+    </script>
+</body>
+</html>
